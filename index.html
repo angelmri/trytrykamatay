@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punching Game</title>
+</head>
+<body>
+    <header>
+
+        <p id = "playerHealth"></p>
+        <p id="opponentHealth"></p>
+
+    </header>
+
+    <button id="attack" style="background-color: purple;" onclick = playerAttack(opponentHealth)> ATTACK</button> <!--attack button-->
+    <button id="defend" style="background-color: pink;" onclick = playerDefend(playerHealth)> DEFEND</button> <!--defend button-->
+    
+    <section>
+        <p id="output"></p>
+
+        <button id="coinBtn" onclick="toggleDropdown()">COIN</button>
+
+        <div id="dropdown">
+            <div class="dropdown-content" id="choiceHead" onclick="tossCoinHeads()">HEAD</div>
+            <div class="dropdown-content" id="choiceTail" onclick="tossCoinTails()">TAIL</div>
+        </div>
+    </section>
+    
+    <script> 
+
+        // makes the head and tail buttons visible
+        function toggleDropdown() {
+            document.getElementById("dropdown").style.display = "block";
+        }
+
+        // health status
+        var playerHealth = 100; 
+        var opponentHealth = 100;
+
+        document.getElementById('playerHealth').innerHTML = "Player HP: " + playerHealth;
+        document.getElementById('opponentHealth').innerHTML = "Opponent HP: " + opponentHealth;
+            
+        // toss coin
+        var attackOrDefend; //var checks if the user gets to attack, defend, or both
+
+        function tossCoinHeads() { //function does a coin toss if the user chooses heads
+            var coin = Math.random();
+            coin = Math.round(coin);
+            if (coin == 0) {
+                 attackOrDefend = true;
+                alert("Coin is head. You chose head!");
+            }
+            else {
+                 attackOrDefend = false;
+                alert("Coin is  tail. You chose head!");
+            }
+            actionBtnVisible();
+        }
+        function tossCoinTails() { //function does a coin toss if the user chooses tails
+            var coin = Math.random();
+            coin = Math.round(coin);
+            if (coin == 0) {
+                 attackOrDefend = false;
+                alert("Coin is head. You chose tails!");
+            }
+            else {
+                 attackOrDefend = true;
+                alert("Coin is  tail. You chose tail!");
+            }
+            actionBtnVisible();
+        }
+
+        function actionBtnVisible() { //function changes the visibility of the attack/defend buttons depending on the result of the coin toss
+            if (attackOrDefend == true) {
+                document.getElementById("attack").style.display = "block";
+                document.getElementById("defend").style.display = "none";
+            }
+            else {
+                document.getElementById("attack").style.display = "block";
+                document.getElementById("defend").style.display = "block";
+            }
+        }
+        
+    //reset button
+
+    // damage
+        function calculateDamage() {
+            var damage = Math.floor((Math.random() * 5) + 1);
+            return damage;
+        }
+
+        // checks the player's and opponent's health
+        function checkHealth(playerHealth, opponentHealth) {
+            if(playerHealth == 0) {
+                document.getElementById("output").innerHTML = "Opponent Wins!";
+            }
+            else if(opponentHealth == 0) {
+                document.getElementById("output").innerHTML = "You Win!";
+            }
+            else {
+                document.getElementById("playerHealth").innerHTML = "Player HP: " + playerHealth;
+                document.getElementById("opponentHealth").innerHTML = "Opponent HP: " + opponentHealth;
+            }
+        }
+
+    // attackOrDefend
+        // determines the opponent's action
+        function opponentAction() {
+            var opponent_choice = Math.round(Math.random() * 2);
+
+            if(opponent_choice == 1) {
+                alert("Opponent attacks!");
+            }
+            else {
+                alert("Opponent defends!");
+            }
+        }
+
+     // executes when the player selects attack
+        function playerAttack(opponentHealth) {
+            var playerDamage = calculateDamage();
+            var opponent_choice = Math.round(Math.random() * 2);  
+            if (opponent_choice == 1 ) {
+                opponentHealth -= playerDamage;
+                alert("You inflict " + playerDamage + " damage.");
+
+            }
+            else {
+                alert("The opponent completely blocked the attack!");
+            }
+
+            document.getElementById("playerHealth").innerHTML = playerHealth;
+            document.getElementById("opponentHealth").innerHTML = opponentHealth;
+
+            checkHealth(playerHealth, opponentHealth);
+        }
+        // executes when the player selects defend
+        function playerDefend(playerHealth) {
+            var opponentDamage = calculateDamage();
+            var DamageDone = opponentDamage - 3;
+            if(DamageDone <= -1){
+                DamageDone = 0;
+                if(opponentDamage > 0){
+                    alert("Opponent inflicts "+ DamageDone +" damage");
+                    playerHealth -= DamageDone;
+                }
+                else{
+                    alert("You completely blocked the opponent.")
+                }
+            }
+
+            document.getElementById("playerHealth").innerHTML = playerHealth;
+            document.getElementById("opponentHealth").innerHTML = opponentHealth;
+            opponentAction();
+            checkHealth(playerHealth, opponentHealth);
+        }
+
+    
+    </script>
+</body>

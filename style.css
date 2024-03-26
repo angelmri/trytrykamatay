@@ -1,0 +1,26 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+#choiceHead, #choiceTail{
+    height: 10vh;
+    width: 15vw;
+}
+
+#choiceHead{background-color: red;}
+#choiceTail{background-color: blue;}
+
+#attack, #defend{
+    display: none;
+    height: 10vh;
+    width: 15vw;
+}
+
+#attack{background-color: pink;}
+#defend{background-color: purple;}
+
+#dropdown{
+    display: none;
+}
+
