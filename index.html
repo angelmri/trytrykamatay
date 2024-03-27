@@ -3,99 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Punching Game</title>
+    <title>Document</title>
 </head>
 <body>
     <header>
-
         <p id = "playerHealth"></p>
-        <p id="opponentHealth"></p>
-
+        <p id = "opponentHealth"></p>
     </header>
-
-    <button id="attack" style="background-color: purple;" onclick = playerAttack(opponentHealth)> ATTACK</button> <!--attack button-->
-    <button id="defend" style="background-color: pink;" onclick = playerDefend(playerHealth)> DEFEND</button> <!--defend button-->
-    
-    <section>
-        <p id="output"></p>
-
-        <button id="coinBtn" onclick="toggleDropdown()">COIN</button>
-
-        <div id="dropdown">
-            <div class="dropdown-content" id="choiceHead" onclick="tossCoinHeads()">HEAD</div>
-            <div class="dropdown-content" id="choiceTail" onclick="tossCoinTails()">TAIL</div>
-        </div>
-    </section>
-    
-    <script> 
-
-        // makes the head and tail buttons visible
-        function toggleDropdown() {
-            document.getElementById("dropdown").style.display = "block";
-        }
-
-        // health status
-        var playerHealth = 100; 
-        var opponentHealth = 100;
-
-        document.getElementById('playerHealth').innerHTML = "Player HP: " + playerHealth;
-        document.getElementById('opponentHealth').innerHTML = "Opponent HP: " + opponentHealth;
+    <button id="attack" style="background-color: blue;" onclick="playerAttack()">ATTACK</button>
+    <button id="defend" style="background-color: pink;" onclick="playerDefend()">DEFEND</button>
+    <div id="action1"></div>
+    <div id="action2"></div>
+    <script>
+        let playerHealth = 100;
+        let opponentHealth = 100;
+        let playerDamage = 0;
+        let opponentDamage = 0;
+        var text; 
+        document.getElementById("playerHealth").innerHTML = "Player HP: " + playerHealth;
+        document.getElementById("opponentHealth").innerHTML = "Opponent HP: " + opponentHealth;
             
-        // toss coin
-        var attackOrDefend; //var checks if the user gets to attack, defend, or both
-
-        function tossCoinHeads() { //function does a coin toss if the user chooses heads
-            var coin = Math.random();
-            coin = Math.round(coin);
-            if (coin == 0) {
-                 attackOrDefend = true;
-                alert("Coin is head. You chose head!");
-            }
-            else {
-                 attackOrDefend = false;
-                alert("Coin is  tail. You chose head!");
-            }
-            actionBtnVisible();
-        }
-        function tossCoinTails() { //function does a coin toss if the user chooses tails
-            var coin = Math.random();
-            coin = Math.round(coin);
-            if (coin == 0) {
-                 attackOrDefend = false;
-                alert("Coin is head. You chose tails!");
-            }
-            else {
-                 attackOrDefend = true;
-                alert("Coin is  tail. You chose tail!");
-            }
-            actionBtnVisible();
-        }
-
-        function actionBtnVisible() { //function changes the visibility of the attack/defend buttons depending on the result of the coin toss
-            if (attackOrDefend == true) {
-                document.getElementById("attack").style.display = "block";
-                document.getElementById("defend").style.display = "none";
-            }
-            else {
-                document.getElementById("attack").style.display = "block";
-                document.getElementById("defend").style.display = "block";
-            }
-        }
-        
-    //reset button
-
-    // This function randomly generates a number from 1 to 5 which will be the attack damage on the players
         function calculateDamage() {
-            var damage = Math.floor((Math.random() * 5) + 1);
-            return damage;
+            return Math.floor((Math.random() * 5) + 1);
         }
 
-        // This function checks each of the players health and determines if the game continues or ends. It also determines who is the winner
-        function checkHealth(playerHealth, opponentHealth) {
-            if(playerHealth == 0) {
+// checks the player's and opponent's health
+        function checkHealth() {
+            if(playerHealth <= 0) { 
                 document.getElementById("output").innerHTML = "Opponent Wins!";
             }
-            else if(opponentHealth == 0) {
+            else if(opponentHealth <= 0) {
                 document.getElementById("output").innerHTML = "You Win!";
             }
             else {
@@ -104,58 +41,58 @@
             }
         }
 
-    // attackOrDefend
-        // determines the opponent's action
-        function opponentAction() {
-            const opponent_choice = Math.floor(Math.random() * 2);
+        function playerAttack() {
+            text = ("You will attack!");      
+            playerDamage = calculateDamage();
 
-            if(opponent_choice == 1) {
-                alert("Opponent attacks!");
-            }
+            var opponentChoice = Math.round(Math.random() * 2);  
+            if (opponentChoice == 0 ) {
+                opponentDamage =  calculateDamage();
+                text = ("Player inflicts "+ playerDamage +" damage");
+                document.getElementById("action1").innerHTML = text;
+
+                document.getElementById("action2").innerHTML = ("Opponent inflicts "+ opponentDamage +" damage");
+                playerHealth = playerHealth - opponentDamage;  
+                opponentHealth = opponentHealth - playerDamage; 
+            }   
             else {
-                alert("Opponent defends!");
-            }
-        }
-
-     // executes when the player selects attack
-        function playerAttack(opponentHealth) {
-            const playerDamage = calculateDamage();
-            const opponent_choice = Math.floor(Math.random() * 2);  
-            if (opponent_choice == 1 ) {
-                newOpponentHealth = opponentHealth - playerDamage;
-                alert("You inflict " + playerDamage + " damage.");
-                return newOpponentHealth;
-            }
-            else {
-                alert("The opponent completely blocked the attack!");
+                opponentDamage = 0;
+                playerDamage = playerDamage - 3;
+                if(playerDamage > 0) {
+                    opponentHealth = opponentHealth - playerDamage; 
+                    document.getElementById("action1").innerHTML = ("Player inflicts" + playerDamage + " damage");
+                }
+                else {
+                    document.getElementById("action2").innerHTML = ("Opponent has completely blocked you.");
+                }
             }
 
-            document.getElementById("playerHealth").innerHTML = playerHealth;
-            document.getElementById("opponentHealth").innerHTML = newopponentHealth;
+            checkHealth();
+        }  
 
-            checkHealth(playerHealth, opponentHealth);
-        }
-        // executes when the player selects defend
-        function playerDefend(playerHealth) {
-            const opponentDamage = calculateDamage();
-            const DamageDone = opponentDamage - 3;
-            if(DamageDone <= -1){
-                DamageDone = 0;
-                if(opponentDamage > 0){
-                    alert("Opponent inflicts "+ DamageDone +" damage");
-                    playerHealth -= DamageDone;
+        function playerDefend(){
+            alert("You will defend!");
+            opponentChoice = Math.round(Math.random() * 2);
+            if(opponentChoice == 0) {
+                opponentDamage = calculateDamage(); 
+                opponentDamage = opponentDamage - 3;
+
+                if(opponentDamage > 0){ 
+                    alert("Opponent inflicts "+ opponentDamage +" damage");
+                    playerHealth -= opponentDamage;
                 }
                 else{
+                    opponentDamage = 0;
                     alert("You completely blocked the opponent.")
                 }
             }
-
-            document.getElementById("playerHealth").innerHTML = playerHealth;
-            document.getElementById("opponentHealth").innerHTML = opponentHealth;
-            opponentAction();
+            else {
+                alert("The opponent defended too");
+            }
+            
             checkHealth(playerHealth, opponentHealth);
         }
 
-    
     </script>
 </body>
+</html>
